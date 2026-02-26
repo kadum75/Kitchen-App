@@ -18,12 +18,21 @@ export default function Expiry() {
   const [shelfLife, setShelfLife] = useState('3');
 
   useEffect(() => {
-    setItems(storageService.getExpiryItems());
+    setItems(storageService.getExpiryItems().sort((a, b) => new Date(a.expiryDate).getTime() - new Date(b.expiryDate).getTime()));
   }, []);
 
   const handleAdd = () => {
     if (!name) return;
     
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const prepDateObj = new Date(prepDate);
+    prepDateObj.setHours(0, 0, 0, 0);
+    if (prepDateObj > today) {
+      alert('Prep date cannot be in the future.');
+      return;
+    }
+
     const prep = new Date(prepDate);
     const expiry = new Date(prep);
     expiry.setDate(prep.getDate() + parseInt(shelfLife));
@@ -37,14 +46,16 @@ export default function Expiry() {
     };
 
     storageService.saveExpiryItem(newItem);
-    setItems(storageService.getExpiryItems());
+    setItems(storageService.getExpiryItems().sort((a, b) => new Date(a.expiryDate).getTime() - new Date(b.expiryDate).getTime()));
     setName('');
+    setPrepDate(new Date().toISOString().split('T')[0]);
+    setShelfLife('3');
     setShowAdd(false);
   };
 
   const handleDelete = (id: string) => {
     storageService.deleteExpiryItem(id);
-    setItems(storageService.getExpiryItems());
+    setItems(storageService.getExpiryItems().sort((a, b) => new Date(a.expiryDate).getTime() - new Date(b.expiryDate).getTime()));
   };
 
   const getStatusColor = (expiryDate: string) => {
@@ -55,8 +66,8 @@ export default function Expiry() {
     
     const diffDays = Math.ceil((expiry.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
 
-    if (diffDays < 0) return 'bg-red-100 border-red-600 text-red-900';
-    if (diffDays <= 1) return 'bg-amber-100 border-amber-600 text-amber-900';
+    if (diffDays <= 0) return 'bg-red-100 border-red-600 text-red-900';
+    if (diffDays === 1) return 'bg-amber-100 border-amber-600 text-amber-900';
     return 'bg-emerald-50 border-emerald-600 text-emerald-900';
   };
 
@@ -105,6 +116,7 @@ export default function Expiry() {
                 <input
                   type="date"
                   value={prepDate}
+                  max={new Date().toISOString().split('T')[0]}
                   onChange={(e) => setPrepDate(e.target.value)}
                   className="w-full p-3 border-2 border-slate-900 font-bold focus:outline-none"
                 />
@@ -137,7 +149,7 @@ export default function Expiry() {
           </div>
         )}
         
-        {items.sort((a, b) => a.expiryDate.localeCompare(b.expiryDate)).map(item => (
+        {items.map(item => (
           <div 
             key={item.id} 
             className={`border-2 border-slate-900 p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex justify-between items-start ${getStatusColor(item.expiryDate)}`}

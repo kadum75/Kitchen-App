@@ -5,28 +5,20 @@
 
 import React, { useState, useEffect } from 'react';
 import { storageService } from '../storage/storageService';
-import { CleaningLog, TemperatureEntry, ExpiryItem } from '../types';
-import { AlertTriangle, CheckCircle2, Thermometer, Calendar } from 'lucide-react';
+import { CleaningLog, TemperatureEntry, ExpiryItem, TASKS, WasteEntry } from '../types';
+import { AlertTriangle, CheckCircle2, Thermometer, Calendar, Trash2 } from 'lucide-react';
 
 export default function Dashboard() {
   const [cleaningStatus, setCleaningStatus] = useState(0);
   const [lastTemp, setLastTemp] = useState<TemperatureEntry | null>(null);
   const [expiredCount, setExpiredCount] = useState(0);
+  const [wasteCount, setWasteCount] = useState(0);
 
   useEffect(() => {
     const today = new Date().toISOString().split('T')[0];
     const log = storageService.getCleaningLog(today);
-    const tasks = [
-      'Food prep surfaces sanitized',
-      'Floors cleaned',
-      'Waste removed',
-      'Fridges cleaned',
-      'Equipment cleaned',
-      'Hand wash stations stocked',
-      'Thermometers checked'
-    ];
-    const completed = tasks.filter(t => log.tasks[t]).length;
-    setCleaningStatus(Math.round((completed / tasks.length) * 100));
+    const completed = TASKS.filter(t => log.tasks[t]).length;
+    setCleaningStatus(Math.round((completed / TASKS.length) * 100));
 
     const temps = storageService.getTemperatureLogs();
     setLastTemp(temps.length > 0 ? temps[0] : null);
@@ -35,6 +27,10 @@ export default function Dashboard() {
     const now = new Date();
     const expired = items.filter(i => new Date(i.expiryDate) < now).length;
     setExpiredCount(expired);
+
+    const waste = storageService.getWasteEntries();
+    const todayWaste = waste.filter(w => w.timestamp.startsWith(today)).length;
+    setWasteCount(todayWaste);
   }, []);
 
   return (
@@ -96,6 +92,18 @@ export default function Dashboard() {
           {expiredCount > 0 && (
             <p className="text-xs font-bold text-red-600 mt-2 uppercase animate-pulse">Action Required Immediately</p>
           )}
+        </div>
+
+        {/* Waste Card */}
+        <div className="bg-violet-50 border-2 border-violet-800 p-6 rounded-none shadow-[4px_4px_0px_0px_rgba(76,29,149,1)]">
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-xs font-black uppercase tracking-widest text-violet-600">Waste Logs</span>
+            <Trash2 className="text-violet-800" size={24} />
+          </div>
+          <div className="flex items-baseline gap-2">
+            <span className="text-5xl font-black text-violet-900">{wasteCount}</span>
+            <span className="text-sm font-bold text-violet-700 uppercase">Entries Today</span>
+          </div>
         </div>
       </div>
     </div>

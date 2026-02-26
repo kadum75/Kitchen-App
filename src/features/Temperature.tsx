@@ -10,9 +10,10 @@ import { Thermometer, Save, AlertCircle } from 'lucide-react';
 
 export default function Temperature() {
   const [type, setType] = useState<'FRIDGE' | 'FREEZER'>('FRIDGE');
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState<string>('');
   const [logs, setLogs] = useState<TemperatureEntry[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
     setLogs(storageService.getTemperatureLogs());
@@ -46,10 +47,17 @@ export default function Temperature() {
     setLogs(storageService.getTemperatureLogs());
     setValue('');
     setError(null);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 2000);
   };
 
   return (
     <div className="space-y-6">
+      {showToast && (
+        <div className="bg-emerald-600 text-white text-center py-3 font-bold text-lg fixed top-0 left-0 right-0 z-50 shadow-lg">
+          Entry saved successfully!
+        </div>
+      )}
       <h2 className="text-2xl font-black uppercase tracking-tighter border-b-4 border-slate-900 pb-2">
         Temperature Log
       </h2>

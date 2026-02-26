@@ -5,18 +5,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { storageService } from '../storage/storageService';
-import { CleaningLog } from '../types';
+import { CleaningLog, TASKS } from '../types';
 import { CheckSquare, Square, History } from 'lucide-react';
-
-const TASKS = [
-  'Food prep surfaces sanitized',
-  'Floors cleaned',
-  'Waste removed',
-  'Fridges cleaned',
-  'Equipment cleaned',
-  'Hand wash stations stocked',
-  'Thermometers checked'
-];
 
 export default function Cleaning() {
   const [showHistory, setShowHistory] = useState(false);
@@ -29,7 +19,12 @@ export default function Cleaning() {
   useEffect(() => {
     const today = new Date().toISOString().split('T')[0];
     setCurrentLog(storageService.getCleaningLog(today));
-    setHistory(storageService.getAllCleaningLogs());
+    
+    const allLogs = storageService.getAllCleaningLogs();
+    const historyWithoutToday = allLogs.filter(log => log.date !== today);
+    const todayLog = allLogs.find(log => log.date === today) || { date: today, tasks: {} };
+    
+    setHistory([todayLog, ...historyWithoutToday]);
   }, []);
 
   const toggleTask = (task: string) => {
@@ -37,10 +32,15 @@ export default function Cleaning() {
     const newLog = { ...currentLog, tasks: newTasks };
     setCurrentLog(newLog);
     storageService.saveCleaningLog(newLog);
-    setHistory(storageService.getAllCleaningLogs());
+    
+    const today = new Date().toISOString().split('T')[0];
+    const allLogs = storageService.getAllCleaningLogs();
+    const historyWithoutToday = allLogs.filter(log => log.date !== today);
+    setHistory([newLog, ...historyWithoutToday]);
   };
 
   if (showHistory) {
+    const today = new Date().toISOString().split('T')[0];
     return (
       <div className="space-y-6">
         <div className="flex justify-between items-center border-b-4 border-slate-900 pb-2">
@@ -56,7 +56,12 @@ export default function Cleaning() {
           {history.map(log => (
             <div key={log.date} className="border-2 border-slate-900 p-4 bg-slate-50">
               <div className="flex justify-between items-center mb-2">
-                <span className="font-black text-lg">{log.date}</span>
+                <div className="flex items-center gap-2">
+                  <span className="font-black text-lg">{log.date}</span>
+                  {log.date === today && (
+                    <span className="text-[10px] font-black bg-emerald-600 text-white px-1.5 py-0.5 rounded tracking-widest">TODAY</span>
+                  )}
+                </div>
                 <span className="text-xs font-bold uppercase bg-slate-200 px-2 py-1">
                   {Object.values(log.tasks).filter(Boolean).length} / {TASKS.length}
                 </span>

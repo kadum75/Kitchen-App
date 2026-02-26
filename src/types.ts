@@ -22,3 +22,24 @@ export interface ExpiryItem {
   expiryDate: string; // yyyy-MM-dd
   shelfLife: number;
 }
+
+export const TASKS = [
+  'Food prep surfaces sanitized',
+  'Floors cleaned',
+  'Waste removed',
+  'Fridges cleaned',
+  'Equipment cleaned',
+  'Hand wash stations stocked',
+  'Thermometers checked'
+];
+
+export type WasteReason = 'expired' | 'spoiled' | 'overproduced' | 'contaminated' | 'other';
+
+export interface WasteEntry {
+  id: string;
+  timestamp: string;
+  item: string;
+  quantity: string;
+  reason: WasteReason;
+  notes?: string;
+}
