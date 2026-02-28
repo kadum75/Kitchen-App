@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-// Kitchen Logs v1.5 - Cache-busting update to force fresh build and verify settings button.
+// KLOGS v1.5 - Cache-busting update to force fresh build and verify settings button.
 import React, { useState, useEffect } from 'react';
 import { LayoutDashboard, ClipboardCheck, Thermometer, CalendarClock, Recycle, Settings, X, Moon, Sun, LogOut, Flame, Home } from 'lucide-react';
 import { storageService } from './storage/storageService';
@@ -26,14 +26,15 @@ function NavButton({ active, onClick, icon, label, badge, theme }: { active: boo
       onClick={onClick}
       title={label}
       style={{ flex: 1, minWidth: 0, padding: '4px 0', height: '100%' }}
-      className={`flex flex-col items-center justify-center border-0 cursor-pointer transition-all ${active ? activeClass : inactiveClass}`}
+      className={`flex flex-col items-center justify-center border-0 cursor-pointer transition-all flex-1 ${active ? activeClass : inactiveClass}`}
     >
       <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        {icon}
+        {React.cloneElement(icon as React.ReactElement, { size: 20 })}
         {badge !== undefined && badge > 0 && (
           <span style={{ position: 'absolute', top: -8, right: -8, background: '#ef4444', color: 'white', borderRadius: '9999px', minWidth: '16px', height: '16px', fontSize: '9px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', padding: '0 3px', border: '1.5px solid white' }}>{badge}</span>
         )}
       </div>
+      <span className="text-[9px] font-black uppercase tracking-tighter mt-1 truncate w-full px-1 text-center">{label}</span>
     </button>
   );
 }
@@ -175,18 +176,20 @@ export default function App() {
           Demo Mode Active - Sample Data Only
         </div>
       )}
-      <div id="app-header" style={{background:'#1e3a5f',color:'white',padding:'12px',display:'flex',flexDirection:'row',alignItems:'center',justifyContent:'space-between',width:'100%',boxSizing:'border-box'}}>
-        <span style={{fontSize:'16px',fontWeight:'bold'}}>KITCHEN LOGS</span>
+      <div id="app-header" style={{background:'#1e3a5f',color:'white',padding:'12px',display:'flex',flexDirection:'row',alignItems:'center',justifyContent:'space-between',width:'100%',boxSizing:'border-box', gap: '8px'}}>
+        <span className="sm:text-base text-sm font-bold truncate min-w-0 flex-1">
+          KLOGS
+        </span>
         
         <button 
           onClick={() => handleTabChange('dashboard')}
-          className="flex flex-col items-center justify-center bg-transparent border-0 text-white cursor-pointer hover:opacity-80 transition-opacity"
+          className="flex flex-col items-center justify-center bg-transparent border-0 text-white cursor-pointer hover:opacity-80 transition-opacity flex-shrink-0"
         >
           <Home size={20} />
           <span className="text-[8px] font-black uppercase tracking-widest mt-0.5">Home</span>
         </button>
 
-        <button id="settings-btn" onClick={()=>setShowSettings(true)} style={{background:'orange',color:'black',padding:'8px',fontSize:'14px',fontWeight:'bold',cursor:'pointer',border:'2px solid white',minWidth:'80px'}}>⚙ Settings</button>
+        <button id="settings-btn" onClick={()=>setShowSettings(true)} style={{background:'orange',color:'black',padding:'8px',fontSize:'14px',fontWeight:'bold',cursor:'pointer',border:'2px solid white',minWidth:'80px'}} className="flex-shrink-0">⚙ Settings</button>
       </div>
 
       <style>{`
@@ -267,7 +270,7 @@ export default function App() {
                   <div className="space-y-4">
                     <div>
                       <h4 className="uppercase font-semibold text-gray-300 text-[10px] tracking-wider mb-1">App Info</h4>
-                      <p className="text-xs text-gray-400 leading-relaxed">Kitchen Logs v1.0 (Beta) - Built by RC Computers, Woking UK. 2026 RC Computers. All rights reserved.</p>
+                      <p className="text-xs text-gray-400 leading-relaxed">KLOGS v1.0 (Beta) - Built by RC Computers, Woking UK. 2026 RC Computers. All rights reserved.</p>
                     </div>
                     <div className="border-t border-slate-700/30 pt-4">
                       <h4 className="uppercase font-semibold text-gray-300 text-[10px] tracking-wider mb-1">Legal Notice</h4>
@@ -307,7 +310,7 @@ export default function App() {
               </div>
               
               <div className="pt-6 border-t-2 border-slate-900/10">
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-30 text-center">Kitchen Logs v1.3</p>
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-30 text-center">KLOGS v1.3</p>
               </div>
             </div>
           </div>
@@ -328,7 +331,7 @@ export default function App() {
                 <p className="text-sm font-bold leading-tight">
                   {isIOS 
                     ? '📲 To install: tap the Share button then "Add to Home Screen"' 
-                    : '📲 Install Kitchen Logs on your home screen'}
+                    : '📲 Install KLOGS on your home screen'}
                 </p>
                 {isIOS && (
                   <button onClick={dismissInstallBanner} className="text-white/60 hover:text-white">
@@ -411,39 +414,39 @@ export default function App() {
       </main>
 
       {/* Bottom Navigation */}
-      <nav style={{ display: 'flex', width: '100%', overflow: 'hidden', height: '64px', position: 'sticky', bottom: 0, borderTop: '2px solid black', zIndex: 50, flexShrink: 0, padding: 0 }} className={theme === 'dark' ? 'bg-slate-950 border-slate-800' : 'bg-white border-slate-900'}>
+      <nav style={{ display: 'flex', width: '100%', overflow: 'hidden', height: 'auto', minHeight: '64px', position: 'sticky', bottom: 0, borderTop: '2px solid black', zIndex: 50, flexShrink: 0, padding: 0, paddingBottom: 'env(safe-area-inset-bottom)' }} className={theme === 'dark' ? 'bg-slate-950 border-slate-800' : 'bg-white border-slate-900'}>
         <NavButton 
           active={activeTab === 'dashboard'} 
           onClick={() => handleTabChange('dashboard')}
-          icon={<LayoutDashboard size={22} />}
+          icon={<LayoutDashboard />}
           label="HOME"
           theme={theme}
         />
         <NavButton 
           active={activeTab === 'cleaning'} 
           onClick={() => handleTabChange('cleaning')}
-          icon={<ClipboardCheck size={22} />}
+          icon={<ClipboardCheck />}
           label="CLEANING"
           theme={theme}
         />
         <NavButton 
           active={activeTab === 'temperature'} 
           onClick={() => handleTabChange('temperature')}
-          icon={<Thermometer size={22} />}
+          icon={<Thermometer />}
           label="TEMP"
           theme={theme}
         />
         <NavButton 
           active={activeTab === 'cooking'} 
           onClick={() => handleTabChange('cooking')}
-          icon={<Flame size={22} />}
+          icon={<Flame />}
           label="COOK"
           theme={theme}
         />
         <NavButton 
           active={activeTab === 'expiry'} 
           onClick={() => handleTabChange('expiry')}
-          icon={<CalendarClock size={22} />}
+          icon={<CalendarClock />}
           label="EXPIRY"
           badge={expiredCount}
           theme={theme}
@@ -451,7 +454,7 @@ export default function App() {
         <NavButton 
           active={activeTab === 'waste'} 
           onClick={() => handleTabChange('waste')}
-          icon={<Recycle size={22} />}
+          icon={<Recycle />}
           label="WASTE"
           theme={theme}
         />

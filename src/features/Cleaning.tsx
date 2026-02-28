@@ -82,7 +82,7 @@ export default function Cleaning() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-24">
       <div className="flex justify-between items-center border-b-4 border-slate-900 pb-2">
         <h2 className="text-2xl font-black uppercase tracking-tighter">Daily Cleaning</h2>
         <button 

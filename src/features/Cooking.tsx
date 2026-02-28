@@ -63,7 +63,7 @@ export default function Cooking({ forceAddTrigger }: { forceAddTrigger?: number 
   };
 
   return (
-    <div className="space-y-6 pb-20">
+    <div className="space-y-6 pb-24">
       <h2 className="text-2xl font-black uppercase tracking-tighter border-b-4 border-slate-900 pb-2">
         Cooking Logs
       </h2>

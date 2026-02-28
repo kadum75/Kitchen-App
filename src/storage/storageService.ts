@@ -183,7 +183,7 @@ export const storageService = {
         targetTemp: 75,
         actualTemp: 78.5,
         probe: 'Probe P-01',
-        operator: 'KL',
+        operator: 'KLOGS',
         status: 'Released for service'
       },
       {
@@ -194,7 +194,7 @@ export const storageService = {
         targetTemp: 75,
         actualTemp: 71.2,
         probe: 'Probe P-01',
-        operator: 'KL',
+        operator: 'KLOGS',
         status: 'Returned to oven, reheated to 80.4°C'
       }
     ];

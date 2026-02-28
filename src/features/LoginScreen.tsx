@@ -66,7 +66,7 @@ export default function LoginScreen({ onLogin, onDemo }: LoginScreenProps) {
           <div className="bg-white/10 p-4 rounded-full">
             <ChefHat size={64} className="text-white" />
           </div>
-          <h1 className="text-4xl font-black text-white tracking-tighter uppercase">Kitchen Logs</h1>
+          <h1 className="text-4xl font-black text-white tracking-tighter uppercase">KLOGS</h1>
           <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">Food Safety Manager</p>
         </div>
 

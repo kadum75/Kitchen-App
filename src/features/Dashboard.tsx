@@ -71,7 +71,7 @@ export default function Dashboard(props: { onNavigate: (tab: any) => void, key?:
     };
 
     const report = `
-KITCHEN LOGS - DAILY HACCP COMPLIANCE REPORT
+KLOGS - DAILY HACCP COMPLIANCE REPORT
 Date: ${today}
 Generated: ${new Date().toLocaleTimeString()}
 
@@ -104,7 +104,7 @@ Compliance Status: ${temps.some(t => !isCompliant(t.type, t.value)) && actions.l
   const cardBaseClass = "relative bg-slate-50 border-2 border-slate-900 p-6 rounded-none shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] cursor-pointer transition-all duration-200 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 active:translate-y-0 active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] group";
 
   return (
-    <div className="space-y-6 pb-20">
+    <div className="space-y-6 pb-24">
       <h2 className="text-2xl font-black uppercase tracking-tighter border-b-4 border-slate-900 pb-2">
         Daily Overview
       </h2>
