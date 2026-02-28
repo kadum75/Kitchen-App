@@ -5,7 +5,7 @@
 
 // Kitchen Logs v1.5 - Cache-busting update to force fresh build and verify settings button.
 import React, { useState, useEffect } from 'react';
-import { LayoutDashboard, ClipboardCheck, Thermometer, CalendarClock, Trash2, Settings, X, Moon, Sun, LogOut, Flame } from 'lucide-react';
+import { LayoutDashboard, ClipboardCheck, Thermometer, CalendarClock, Recycle, Settings, X, Moon, Sun, LogOut, Flame, Home } from 'lucide-react';
 import { storageService } from './storage/storageService';
 import Dashboard from './features/Dashboard';
 import Cleaning from './features/Cleaning';
@@ -175,7 +175,19 @@ export default function App() {
           Demo Mode Active - Sample Data Only
         </div>
       )}
-      <div id="app-header" style={{background:'#1e3a5f',color:'white',padding:'12px',display:'flex',flexDirection:'row',alignItems:'center',justifyContent:'space-between',width:'100%',boxSizing:'border-box'}}><span style={{fontSize:'16px',fontWeight:'bold'}}>KITCHEN LOGS</span><button id="settings-btn" onClick={()=>setShowSettings(true)} style={{background:'orange',color:'black',padding:'8px',fontSize:'14px',fontWeight:'bold',cursor:'pointer',border:'2px solid white',minWidth:'80px'}}>⚙ Settings</button></div>
+      <div id="app-header" style={{background:'#1e3a5f',color:'white',padding:'12px',display:'flex',flexDirection:'row',alignItems:'center',justifyContent:'space-between',width:'100%',boxSizing:'border-box'}}>
+        <span style={{fontSize:'16px',fontWeight:'bold'}}>KITCHEN LOGS</span>
+        
+        <button 
+          onClick={() => handleTabChange('dashboard')}
+          className="flex flex-col items-center justify-center bg-transparent border-0 text-white cursor-pointer hover:opacity-80 transition-opacity"
+        >
+          <Home size={20} />
+          <span className="text-[8px] font-black uppercase tracking-widest mt-0.5">Home</span>
+        </button>
+
+        <button id="settings-btn" onClick={()=>setShowSettings(true)} style={{background:'orange',color:'black',padding:'8px',fontSize:'14px',fontWeight:'bold',cursor:'pointer',border:'2px solid white',minWidth:'80px'}}>⚙ Settings</button>
+      </div>
 
       <style>{`
         .dark-theme .bg-slate-50, 
@@ -439,7 +451,7 @@ export default function App() {
         <NavButton 
           active={activeTab === 'waste'} 
           onClick={() => handleTabChange('waste')}
-          icon={<Trash2 size={22} />}
+          icon={<Recycle size={22} />}
           label="WASTE"
           theme={theme}
         />
