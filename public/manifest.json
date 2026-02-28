@@ -1,6 +1,7 @@
 {
   "short_name": "KitchenLogs",
-  "name": "Kitchen Logs - Digital Logbook",
+  "name": "Kitchen Logs",
+  "description": "Digital HACCP kitchen logbook for small restaurants",
   "icons": [
     {
       "src": "https://picsum.photos/192/192",
@@ -13,8 +14,9 @@
       "sizes": "512x512"
     }
   ],
-  "start_url": ".",
+  "start_url": "/",
   "display": "standalone",
-  "theme_color": "#0f172a",
-  "background_color": "#ffffff"
+  "background_color": "#0f1f3d",
+  "theme_color": "#0f1f3d",
+  "orientation": "portrait"
 }

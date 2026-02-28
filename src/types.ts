@@ -11,16 +11,23 @@ export interface CleaningLog {
 export interface TemperatureEntry {
   id: string;
   timestamp: number;
-  type: 'FRIDGE' | 'FREEZER';
+  type: 'FRIDGE' | 'FREEZER' | 'HOT_HOLD';
   value: number;
+  equipmentNumber: string;
+  location?: string;
+  item?: string;
+  staffName?: string;
+  action?: string;
 }
+
+export type ExpiryStatus = 'ACTIVE' | 'EXPIRES SOON' | 'EXPIRED';
 
 export interface ExpiryItem {
   id: string;
-  name: string;
+  itemName: string;
   prepDate: string; // yyyy-MM-dd
-  expiryDate: string; // yyyy-MM-dd
-  shelfLife: number;
+  expDate: string; // yyyy-MM-dd
+  status: ExpiryStatus;
 }
 
 export const TASKS = [
@@ -33,7 +40,7 @@ export const TASKS = [
   'Thermometers checked'
 ];
 
-export type WasteReason = 'expired' | 'spoiled' | 'overproduced' | 'contaminated' | 'other';
+export type WasteReason = 'SPOILAGE' | 'OVER-PREP' | 'CUSTOMER RETURN' | 'DAMAGED' | 'EXPIRED';
 
 export interface WasteEntry {
   id: string;
@@ -42,4 +49,28 @@ export interface WasteEntry {
   quantity: string;
   reason: WasteReason;
   notes?: string;
+}
+
+export interface CorrectiveAction {
+  id: string;
+  timestamp: string;
+  ccpType: 'FRIDGE' | 'FREEZER' | 'HOT_HOLD' | 'EXPIRY';
+  temperature?: number;
+  action: string;
+  notes: string;
+  staffName: string;
+  rootCause?: string;
+  prevention?: string;
+}
+
+export interface CookingEntry {
+  id: string;
+  timestamp: string;
+  item: string;
+  batch: string;
+  targetTemp: number;
+  actualTemp: number;
+  probe: string;
+  operator: string;
+  status: string;
 }
