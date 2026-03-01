@@ -4,7 +4,7 @@
  */
 
 // KLOGS v1.5 - Cache-busting update to force fresh build and verify settings button.
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { LayoutDashboard, ClipboardCheck, Thermometer, CalendarClock, Recycle, Settings, X, Moon, Sun, LogOut, Flame, Home, User, ShieldCheck, CreditCard, Clock, ChefHat, Loader2, MessageSquare, CheckCircle } from 'lucide-react';
 import { storageService } from './storage/storageService';
 import { supabase, supabaseAnonKey } from './lib/supabase';
@@ -71,6 +71,8 @@ export default function App() {
   const [feedbackSuccess, setFeedbackSuccess] = useState(false);
   const mainRef = React.useRef<HTMLDivElement>(null);
 
+  const TRIAL_DAYS = 14;
+
   useEffect(() => {
     if (isLoggedIn && window.location.hash) {
       // Clear hash from URL after successful login
@@ -78,14 +80,13 @@ export default function App() {
     }
   }, [isLoggedIn]);
 
-  const TRIAL_DAYS = 14;
-  let daysRemaining = 0;
-  if (trialStart) {
+  const daysRemaining = useMemo(() => {
+    if (!trialStart) return 0;
     const start = new Date(trialStart);
     const now = new Date();
     const diff = now.getTime() - start.getTime();
-    daysRemaining = TRIAL_DAYS - Math.floor(diff / (1000 * 60 * 60 * 24));
-  }
+    return TRIAL_DAYS - Math.floor(diff / (1000 * 60 * 60 * 24));
+  }, [trialStart]);
 
   useEffect(() => {
     const initAuth = async () => {
@@ -129,7 +130,14 @@ export default function App() {
     return () => subscription.unsubscribe();
   }, [isDemoMode]);
 
-  const fetchProfile = async (user: any) => {
+  const updateLocalProfile = useCallback((profile: any) => {
+    localStorage.setItem('klogs_trial_start', profile.trial_start);
+    localStorage.setItem('klogs_is_paid', profile.is_paid.toString());
+    setTrialStart(profile.trial_start);
+    setIsPaid(profile.is_paid);
+  }, []);
+
+  const fetchProfile = useCallback(async (user: any) => {
     try {
       const { data, error } = await supabase
         .from('profiles')
@@ -154,16 +162,9 @@ export default function App() {
     } catch (err) {
       console.error('Error fetching profile:', err);
     }
-  };
+  }, [updateLocalProfile]);
 
-  const updateLocalProfile = (profile: any) => {
-    localStorage.setItem('klogs_trial_start', profile.trial_start);
-    localStorage.setItem('klogs_is_paid', profile.is_paid.toString());
-    setTrialStart(profile.trial_start);
-    setIsPaid(profile.is_paid);
-  };
-
-  const handleSendFeedback = async () => {
+  const handleSendFeedback = useCallback(async () => {
     if (!feedbackQ1 && !feedbackQ2 && !feedbackQ3) return;
     
     setIsFeedbackSending(true);
@@ -195,9 +196,7 @@ export default function App() {
     } finally {
       setIsFeedbackSending(false);
     }
-  };
-
-  console.log('App rendering, theme:', theme, 'showSettings:', showSettings);
+  }, [feedbackQ1, feedbackQ2, feedbackQ3, isDemoMode, session, supabaseAnonKey]);
 
   useEffect(() => {
     // PWA Install Logic
@@ -273,14 +272,14 @@ export default function App() {
     setExpiredCount(count);
   }, [activeTab]);
 
-  const handleTabChange = (tab: Tab) => {
+  const handleTabChange = useCallback((tab: Tab) => {
     if (tab === 'dashboard') {
       setDashboardKey(prev => prev + 1);
     }
     setActiveTab(tab);
-  };
+  }, []);
 
-  const renderContent = () => {
+  const renderContent = useCallback(() => {
     switch (activeTab) {
       case 'dashboard': return <Dashboard key={dashboardKey} onNavigate={handleTabChange} />;
       case 'cleaning': return <Cleaning />;
@@ -290,9 +289,9 @@ export default function App() {
       case 'waste': return <Waste />;
       default: return <Dashboard key={dashboardKey} onNavigate={handleTabChange} />;
     }
-  };
+  }, [activeTab, dashboardKey, handleTabChange, staffName, tempForceAdd, cookForceAdd, expiryForceAdd]);
 
-  const handleInstallClick = async () => {
+  const handleInstallClick = useCallback(async () => {
     if (!deferredPrompt) return;
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
@@ -300,12 +299,12 @@ export default function App() {
       setShowInstallBanner(false);
     }
     setDeferredPrompt(null);
-  };
+  }, [deferredPrompt]);
 
-  const dismissInstallBanner = () => {
+  const dismissInstallBanner = useCallback(() => {
     setShowInstallBanner(false);
     localStorage.setItem('install_dismissed', 'true');
-  };
+  }, []);
 
   if (isAuthLoading) {
     return (
