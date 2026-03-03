@@ -15,6 +15,7 @@ import Cooking from './features/Cooking';
 import Expiry from './features/Expiry';
 import Waste from './features/Waste';
 import LoginScreen from './features/LoginScreen';
+import PricingScreen from './features/PricingScreen';
 
 type Tab = 'dashboard' | 'cleaning' | 'temperature' | 'cooking' | 'expiry' | 'waste';
 
@@ -69,12 +70,39 @@ export default function App() {
   const [feedbackQ3, setFeedbackQ3] = useState('');
   const [isFeedbackSending, setIsFeedbackSending] = useState(false);
   const [feedbackSuccess, setFeedbackSuccess] = useState(false);
+  const [feedbackError, setFeedbackError] = useState('');
+  const [trialExpiredMessage, setTrialExpiredMessage] = useState('');
+  const [hasCheckedExpiry, setHasCheckedExpiry] = useState(false);
+  const [currentRoute, setCurrentRoute] = useState(() => {
+    if (window.location.pathname === '/pricing' || window.location.hash === '#pricing') return 'pricing';
+    if (window.location.pathname === '/payment-success' || window.location.hash === '#payment-success') return 'payment-success';
+    return 'app';
+  });
   const mainRef = React.useRef<HTMLDivElement>(null);
 
   const TRIAL_DAYS = 14;
 
   useEffect(() => {
-    if (isLoggedIn && window.location.hash) {
+    const handleLocationChange = () => {
+      if (window.location.pathname === '/pricing' || window.location.hash === '#pricing') {
+        setCurrentRoute('pricing');
+      } else if (window.location.pathname === '/payment-success' || window.location.hash === '#payment-success') {
+        setCurrentRoute('payment-success');
+      } else {
+        setCurrentRoute('app');
+      }
+    };
+
+    window.addEventListener('popstate', handleLocationChange);
+    window.addEventListener('hashchange', handleLocationChange);
+    return () => {
+      window.removeEventListener('popstate', handleLocationChange);
+      window.removeEventListener('hashchange', handleLocationChange);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isLoggedIn && window.location.hash && !window.location.hash.includes('pricing') && !window.location.hash.includes('payment-success')) {
       // Clear hash from URL after successful login
       window.history.replaceState(null, '', window.location.pathname);
     }
@@ -87,6 +115,21 @@ export default function App() {
     const diff = now.getTime() - start.getTime();
     return TRIAL_DAYS - Math.floor(diff / (1000 * 60 * 60 * 24));
   }, [trialStart]);
+
+  useEffect(() => {
+    if (isLoggedIn && !isDemoMode && !isPaid && trialStart && !hasCheckedExpiry) {
+      const start = new Date(trialStart);
+      const now = new Date();
+      const diff = now.getTime() - start.getTime();
+      const days = TRIAL_DAYS - Math.floor(diff / (1000 * 60 * 60 * 24));
+      
+      if (days <= 0 && currentRoute !== 'pricing') {
+        setCurrentRoute('pricing');
+        setTrialExpiredMessage('Your free trial has ended. Set up Direct Debit to continue.');
+      }
+      setHasCheckedExpiry(true);
+    }
+  }, [isLoggedIn, isDemoMode, isPaid, trialStart, hasCheckedExpiry, currentRoute]);
 
   useEffect(() => {
     const initAuth = async () => {
@@ -146,12 +189,19 @@ export default function App() {
         .single();
 
       if (error && error.code === 'PGRST116') {
-        const now = new Date().toISOString();
+        const now = new Date();
+        const trialEndsAt = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000).toISOString();
+        const nowStr = now.toISOString();
+
         const { data: newProfile, error: insertError } = await supabase
           .from('profiles')
-          .insert([{ id: user.id, email: user.email, trial_start: now }])
+          .insert([{ id: user.id, email: user.email, trial_start: nowStr }])
           .select()
           .single();
+          
+        await supabase
+          .from('subscriptions')
+          .insert([{ user_id: user.id, status: 'trialing', trial_ends_at: trialEndsAt }]);
         
         if (newProfile) {
           updateLocalProfile(newProfile);
@@ -165,8 +215,23 @@ export default function App() {
   }, [updateLocalProfile]);
 
   const handleSendFeedback = useCallback(async () => {
-    if (!feedbackQ1 && !feedbackQ2 && !feedbackQ3) return;
+    const sanitiseInput = (str: string): string => {
+      return str
+        .trim()
+        .slice(0, 500)
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#x27;');
+    };
+
+    if (!feedbackQ1.trim() && !feedbackQ2.trim() && !feedbackQ3.trim()) {
+      setFeedbackError('Please answer at least one question');
+      return;
+    }
     
+    setFeedbackError('');
     setIsFeedbackSending(true);
     try {
       const userEmail = isDemoMode ? 'demo@user.com' : (session?.user?.email || 'unknown@user.com');
@@ -178,9 +243,9 @@ export default function App() {
         },
         body: JSON.stringify({
           user_email: userEmail,
-          q1_confusing: feedbackQ1,
-          q2_missing: feedbackQ2,
-          q3_vs_paper: feedbackQ3
+          q1_confusing: sanitiseInput(feedbackQ1),
+          q2_missing: sanitiseInput(feedbackQ2),
+          q3_vs_paper: sanitiseInput(feedbackQ3)
         })
       });
 
@@ -315,6 +380,50 @@ export default function App() {
             <Loader2 size={20} className="text-emerald-500 animate-spin" />
             <span className="text-white font-black uppercase tracking-widest text-xs">Loading KLOGS...</span>
           </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (currentRoute === 'pricing') {
+    return (
+      <PricingScreen 
+        onBack={() => {
+          window.location.hash = '';
+          setCurrentRoute('app');
+        }}
+        onDemo={() => {
+          window.location.hash = '';
+          setCurrentRoute('app');
+          setIsDemoMode(true);
+          setIsLoggedIn(true);
+          setStaffName('Demo User');
+        }}
+      />
+    );
+  }
+
+  if (currentRoute === 'payment-success') {
+    return (
+      <div className="fixed inset-0 bg-[#0a1628] flex flex-col items-center justify-center p-6 z-[200]">
+        <div className="w-full max-w-sm bg-white/5 border-2 border-[#22c55e] p-8 text-center space-y-6 shadow-2xl relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-2 bg-[#22c55e]" />
+          <div className="flex justify-center">
+            <CheckCircle size={64} className="text-[#22c55e]" />
+          </div>
+          <h2 className="text-2xl font-black text-white uppercase tracking-tight">Direct Debit Set Up!</h2>
+          <p className="text-slate-300 text-sm font-medium leading-relaxed">
+            Your KLOGS subscription is active. £5/month will be collected monthly.
+          </p>
+          <button 
+            onClick={() => {
+              window.location.hash = '';
+              setCurrentRoute('app');
+            }}
+            className="w-full py-4 bg-[#22c55e] text-white font-black uppercase tracking-widest text-sm border-2 border-slate-900 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-y-1 active:shadow-none"
+          >
+            Go to Dashboard
+          </button>
         </div>
       </div>
     );
@@ -535,31 +644,44 @@ export default function App() {
                       <textarea 
                         value={feedbackQ1}
                         onChange={(e) => setFeedbackQ1(e.target.value)}
+                        maxLength={500}
                         className="w-full p-2 text-xs border-2 border-slate-900 bg-white min-h-[60px] focus:border-emerald-500 outline-none"
                         placeholder="Type here..."
                       />
+                      <p className="text-[8px] text-right text-slate-400 font-bold uppercase tracking-widest">{feedbackQ1.length} / 500 characters</p>
                     </div>
                     <div className="space-y-1">
                       <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400">2. Is there anything missing that you need daily?</p>
                       <textarea 
                         value={feedbackQ2}
                         onChange={(e) => setFeedbackQ2(e.target.value)}
+                        maxLength={500}
                         className="w-full p-2 text-xs border-2 border-slate-900 bg-white min-h-[60px] focus:border-emerald-500 outline-none"
                         placeholder="Type here..."
                       />
+                      <p className="text-[8px] text-right text-slate-400 font-bold uppercase tracking-widest">{feedbackQ2.length} / 500 characters</p>
                     </div>
                     <div className="space-y-1">
                       <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400">3. Would you use this instead of paper? Why/why not?</p>
                       <textarea 
                         value={feedbackQ3}
                         onChange={(e) => setFeedbackQ3(e.target.value)}
+                        maxLength={500}
                         className="w-full p-2 text-xs border-2 border-slate-900 bg-white min-h-[60px] focus:border-emerald-500 outline-none"
                         placeholder="Type here..."
                       />
+                      <p className="text-[8px] text-right text-slate-400 font-bold uppercase tracking-widest">{feedbackQ3.length} / 500 characters</p>
                     </div>
+                    
+                    {feedbackError && (
+                      <p className="text-[10px] font-black uppercase tracking-widest text-red-500 text-center animate-pulse">
+                        {feedbackError}
+                      </p>
+                    )}
+
                     <button 
                       onClick={handleSendFeedback}
-                      disabled={isFeedbackSending || (!feedbackQ1 && !feedbackQ2 && !feedbackQ3)}
+                      disabled={isFeedbackSending}
                       className="w-full py-3 bg-emerald-500 text-white border-2 border-slate-900 font-black uppercase tracking-widest text-[10px] shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-y-0.5 active:shadow-none disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
                       {isFeedbackSending ? <Loader2 size={14} className="animate-spin" /> : null}
@@ -599,22 +721,6 @@ export default function App() {
                     </div>
                   </div>
                 </div>
-              </div>
-
-              <div className="flex flex-col gap-4 pt-4 border-t-2 border-slate-900/10">
-                <label className="font-black uppercase tracking-widest text-[10px] text-slate-500">Security</label>
-                <button 
-                  onClick={() => {
-                    if (confirm('Are you sure you want to reset all PINs? This will log you out and require a new setup.')) {
-                      localStorage.removeItem('klogs_manager_pin');
-                      localStorage.removeItem('klogs_staff_pin');
-                      window.location.reload();
-                    }
-                  }}
-                  className="w-full flex items-center justify-center gap-2 py-3 bg-slate-100 text-slate-900 border-2 border-slate-900 font-black uppercase tracking-widest text-[10px] shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-y-0.5 active:shadow-none"
-                >
-                  Reset PINs
-                </button>
               </div>
 
               <div className="flex flex-col gap-4 pt-4">

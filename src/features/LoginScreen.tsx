@@ -109,6 +109,15 @@ export default function LoginScreen({ onDemo }: LoginScreenProps) {
                 </>
               )}
             </button>
+            <div className="text-center pt-2">
+              <button
+                type="button"
+                onClick={() => window.location.hash = 'pricing'}
+                className="text-emerald-400 text-[10px] font-black uppercase tracking-widest hover:underline"
+              >
+                View Pricing
+              </button>
+            </div>
           </form>
         )}
 
@@ -121,10 +130,10 @@ export default function LoginScreen({ onDemo }: LoginScreenProps) {
 
           <button
             onClick={onDemo}
-            className="w-full py-4 bg-transparent text-white font-black uppercase tracking-widest text-sm border-2 border-white hover:bg-white/5 transition-all flex items-center justify-center gap-2"
+            className="w-full py-4 bg-transparent text-white font-black uppercase tracking-widest text-[10px] border-2 border-white hover:bg-white/5 transition-all flex items-center justify-center gap-2"
           >
             <Eye size={18} />
-            Continue in Demo Mode
+            Try Free for 14 Days — No Card Needed
           </button>
         </div>
 
