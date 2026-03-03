@@ -25,7 +25,7 @@ export default function LoginScreen({ onDemo }: LoginScreenProps) {
     setError('');
 
     try {
-      const { error } = await supabase.auth.signInWithOtp({
+      const { data, error } = await supabase.auth.signInWithOtp({
         email,
         options: {
           emailRedirectTo: window.location.origin,
@@ -33,6 +33,27 @@ export default function LoginScreen({ onDemo }: LoginScreenProps) {
       });
 
       if (error) throw error;
+
+      const authData: any = data;
+      if (authData && authData.user && authData.user.id) {
+        const trialEndsAt = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString();
+        
+        await supabase
+          .from('profiles')
+          .upsert({ 
+            id: authData.user.id, 
+            email: email 
+          }, { onConflict: 'id', ignoreDuplicates: true });
+          
+        await supabase
+          .from('subscriptions')
+          .upsert({ 
+            user_id: authData.user.id, 
+            status: 'trialing', 
+            trial_ends_at: trialEndsAt 
+          }, { onConflict: 'user_id', ignoreDuplicates: true });
+      }
+
       setIsSent(true);
     } catch (err: any) {
       setError(err.message || 'Failed to send magic link');

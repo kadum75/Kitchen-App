@@ -48,6 +48,8 @@ export default function App() {
   const [isAuthLoading, setIsAuthLoading] = useState(true);
   const [trialStart, setTrialStart] = useState<string | null>(localStorage.getItem('klogs_trial_start'));
   const [isPaid, setIsPaid] = useState<boolean>(localStorage.getItem('klogs_is_paid') === 'true');
+  const [subscriptionStatus, setSubscriptionStatus] = useState<string | null>(null);
+  const [subscriptionTrialEndsAt, setSubscriptionTrialEndsAt] = useState<string | null>(null);
   const [staffName, setStaffName] = useState('Staff');
   const [activeTab, setActiveTab] = useState<Tab>('dashboard');
   const [dashboardKey, setDashboardKey] = useState(0);
@@ -205,9 +207,22 @@ export default function App() {
         
         if (newProfile) {
           updateLocalProfile(newProfile);
+          setSubscriptionStatus('trialing');
+          setSubscriptionTrialEndsAt(trialEndsAt);
         }
       } else if (data) {
         updateLocalProfile(data);
+        
+        const { data: sub } = await supabase
+          .from('subscriptions')
+          .select('*')
+          .eq('user_id', user.id)
+          .single();
+          
+        if (sub) {
+          setSubscriptionStatus(sub.status);
+          setSubscriptionTrialEndsAt(sub.trial_ends_at);
+        }
       }
     } catch (err) {
       console.error('Error fetching profile:', err);
