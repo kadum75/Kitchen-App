@@ -27,7 +27,7 @@ function NavButton({ active, onClick, icon, label, badge, theme }: { active: boo
     <button
       onClick={onClick}
       title={label}
-      style={{ flex: 1, minWidth: 0, padding: '4px 0', height: '100%' }}
+      style={{ flex: 1, minWidth: 0, padding: '8px 0', minHeight: '48px', height: '100%' }}
       className={`flex flex-col items-center justify-center border-0 cursor-pointer transition-all flex-1 ${active ? activeClass : inactiveClass}`}
     >
       <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -769,6 +769,11 @@ export default function App() {
       <main ref={mainRef} className="flex-1 overflow-y-auto relative">
         <div className="p-4">
           {renderContent()}
+          <footer className="mt-12 mb-8 text-center px-4">
+            <p className={`text-[10px] font-medium tracking-wide ${theme === 'dark' ? 'text-slate-500' : 'text-slate-400'}`}>
+              Powered by ZenStack – secure, type‑safe data layer for modern TypeScript apps: <a href="https://zenstack.netlify.app/" target="_blank" rel="noopener noreferrer" className="underline hover:text-emerald-500 transition-colors">https://zenstack.netlify.app/</a>
+            </p>
+          </footer>
         </div>
 
         {/* PWA Install Banner */}
@@ -883,13 +888,6 @@ export default function App() {
           onClick={() => handleTabChange('temperature')}
           icon={<Thermometer />}
           label="TEMP"
-          theme={theme}
-        />
-        <NavButton 
-          active={activeTab === 'cooking'} 
-          onClick={() => handleTabChange('cooking')}
-          icon={<Flame />}
-          label="COOK"
           theme={theme}
         />
         <NavButton 

@@ -149,7 +149,7 @@ export default function Expiry({ forceAddTrigger }: { forceAddTrigger?: number }
       </div>
 
       {showAdd && (
-        <div className="bg-white border-2 border-slate-900 p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] animate-in slide-in-from-top duration-200">
+        <div className="bg-white border-2 border-slate-900 p-6 rounded-2xl shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] animate-in slide-in-from-top duration-200">
           <div className="space-y-4">
             <div>
               <label className="block text-xs font-black uppercase tracking-widest text-slate-500 mb-1">Item Name</label>
@@ -159,10 +159,10 @@ export default function Expiry({ forceAddTrigger }: { forceAddTrigger?: number }
                 value={itemName}
                 onChange={(e) => setItemName(e.target.value)}
                 placeholder="e.g. Tomato Sauce"
-                className="w-full p-3 border-2 border-slate-900 font-bold focus:outline-none focus:ring-4 focus:ring-emerald-500/20"
+                className="w-full p-4 border-2 border-slate-900 rounded-xl font-bold focus:outline-none focus:ring-4 focus:ring-emerald-500/20"
               />
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-black uppercase tracking-widest text-slate-500 mb-1">Prep Date</label>
                 <input
@@ -170,7 +170,7 @@ export default function Expiry({ forceAddTrigger }: { forceAddTrigger?: number }
                   value={prepDate}
                   max={new Date().toISOString().split('T')[0]}
                   onChange={(e) => setPrepDate(e.target.value)}
-                  className="w-full p-3 border-2 border-slate-900 font-bold focus:outline-none"
+                  className="w-full p-4 border-2 border-slate-900 rounded-xl font-bold focus:outline-none"
                 />
               </div>
               <div>
@@ -188,7 +188,7 @@ export default function Expiry({ forceAddTrigger }: { forceAddTrigger?: number }
                       <button
                         key={p.label}
                         onClick={() => setPreset(p.days)}
-                        className="px-2 py-1 bg-slate-100 border-2 border-slate-900 text-[10px] font-black uppercase tracking-tight hover:bg-slate-200 active:translate-y-0.5"
+                        className="px-3 py-2 bg-slate-100 border-2 border-slate-900 rounded-lg text-[10px] font-black uppercase tracking-tight hover:bg-slate-200 active:translate-y-0.5"
                       >
                         {p.label}
                       </button>
@@ -200,13 +200,13 @@ export default function Expiry({ forceAddTrigger }: { forceAddTrigger?: number }
                   type="number"
                   value={shelfLife}
                   onChange={(e) => setShelfLife(e.target.value)}
-                  className="w-full p-3 border-2 border-slate-900 font-bold focus:outline-none"
+                  className="w-full p-4 border-2 border-slate-900 rounded-xl font-bold focus:outline-none"
                 />
               </div>
             </div>
             <button
               onClick={handleAdd}
-              className="w-full bg-slate-900 text-white py-4 font-black uppercase tracking-widest border-2 border-slate-900 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-y-1 active:shadow-none"
+              className="w-full bg-slate-900 text-white py-5 rounded-xl font-black uppercase tracking-widest border-2 border-slate-900 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:translate-y-1 active:shadow-none"
             >
               Add to List
             </button>
@@ -231,7 +231,7 @@ export default function Expiry({ forceAddTrigger }: { forceAddTrigger?: number }
                     return (
                       <div 
                         key={item.id} 
-                        className={`border-2 border-slate-900 dark:border-slate-700 p-4 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_0px_rgba(255,255,255,0.05)] flex justify-between items-center ${getStatusBg(item.status)}`}
+                        className={`border-2 border-slate-900 dark:border-slate-700 p-5 rounded-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.05)] flex justify-between items-center ${getStatusBg(item.status)}`}
                       >
                         <div className="space-y-1">
                           <div className="flex items-center gap-2">

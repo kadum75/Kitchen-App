@@ -101,7 +101,7 @@ Compliance Status: ${temps.some(t => !isCompliant(t.type, t.value)) && actions.l
     return report;
   };
 
-  const cardBaseClass = "relative bg-slate-50 border-2 border-slate-900 p-6 rounded-none shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] cursor-pointer transition-all duration-200 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 active:translate-y-0 active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] group";
+  const cardBaseClass = "relative bg-slate-50 border-2 border-slate-900 p-6 rounded-2xl shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all duration-200 group overflow-hidden";
 
   return (
     <div className="space-y-6 pb-24">
@@ -110,19 +110,19 @@ Compliance Status: ${temps.some(t => !isCompliant(t.type, t.value)) && actions.l
       </h2>
 
       {/* Temperature Check Reminders */}
-      <div className="bg-slate-900 text-white p-4 border-2 border-slate-900 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)]">
-        <h3 className="text-[10px] font-black uppercase tracking-[0.2em] mb-3 flex items-center gap-2">
+      <div className="bg-slate-900 text-white p-5 border-2 border-slate-900 rounded-2xl shadow-[6px_6px_0px_0px_rgba(0,0,0,0.2)]">
+        <h3 className="text-[10px] font-black uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
           <Clock size={14} className="text-emerald-400" />
           Temperature Checks Due
         </h3>
-        <div className="grid grid-cols-2 gap-3">
-          <div className={`p-3 border-2 ${tempChecks.morning === 'Completed' ? 'border-emerald-500 bg-emerald-900/20' : tempChecks.morning === 'Overdue' ? 'border-red-500 bg-red-900/20' : 'border-slate-700 bg-slate-800'}`}>
+        <div className="grid grid-cols-2 gap-4">
+          <div className={`p-4 border-2 rounded-xl ${tempChecks.morning === 'Completed' ? 'border-emerald-500 bg-emerald-900/20' : tempChecks.morning === 'Overdue' ? 'border-red-500 bg-red-900/20' : 'border-slate-700 bg-slate-800'}`}>
             <p className="text-[10px] font-bold uppercase opacity-50 mb-1">Morning (10:00)</p>
             <p className={`text-sm font-black uppercase ${tempChecks.morning === 'Completed' ? 'text-emerald-400' : tempChecks.morning === 'Overdue' ? 'text-red-400' : 'text-slate-400'}`}>
               {tempChecks.morning === 'Completed' ? '✓ Completed' : tempChecks.morning === 'Overdue' ? '⚠ Overdue' : 'Pending'}
             </p>
           </div>
-          <div className={`p-3 border-2 ${tempChecks.afternoon === 'Completed' ? 'border-emerald-500 bg-emerald-900/20' : tempChecks.afternoon === 'Overdue' ? 'border-red-500 bg-red-900/20' : 'border-slate-700 bg-slate-800'}`}>
+          <div className={`p-4 border-2 rounded-xl ${tempChecks.afternoon === 'Completed' ? 'border-emerald-500 bg-emerald-900/20' : tempChecks.afternoon === 'Overdue' ? 'border-red-500 bg-red-900/20' : 'border-slate-700 bg-slate-800'}`}>
             <p className="text-[10px] font-bold uppercase opacity-50 mb-1">Afternoon (15:00)</p>
             <p className={`text-sm font-black uppercase ${tempChecks.afternoon === 'Completed' ? 'text-emerald-400' : tempChecks.afternoon === 'Overdue' ? 'text-red-400' : 'text-slate-400'}`}>
               {tempChecks.afternoon === 'Completed' ? '✓ Completed' : tempChecks.afternoon === 'Overdue' ? '⚠ Overdue' : 'Pending'}
@@ -131,13 +131,9 @@ Compliance Status: ${temps.some(t => !isCompliant(t.type, t.value)) && actions.l
         </div>
       </div>
 
-      <div className="grid gap-4">
+      <div className="grid gap-6">
         {/* Cleaning Card */}
-        <div 
-          onClick={() => onNavigate('cleaning')}
-          className={cardBaseClass}
-          aria-label="View cleaning progress"
-        >
+        <div className={cardBaseClass}>
           <div className="flex items-center justify-between mb-4">
             <span className="text-xs font-black uppercase tracking-widest text-slate-500">Cleaning Progress</span>
             <CheckCircle2 className={cleaningStatus === 100 ? 'text-emerald-600' : 'text-slate-400'} size={24} />
@@ -146,21 +142,23 @@ Compliance Status: ${temps.some(t => !isCompliant(t.type, t.value)) && actions.l
             <span className="text-5xl font-black">{cleaningStatus}%</span>
             <span className="text-sm font-bold text-slate-500 uppercase">Complete</span>
           </div>
-          <div className="mt-4 w-full bg-slate-200 h-4 border border-slate-900">
+          <div className="mt-4 w-full bg-slate-200 h-4 border border-slate-900 rounded-full overflow-hidden">
             <div 
               className="bg-emerald-500 h-full transition-all duration-500" 
               style={{ width: `${cleaningStatus}%` }}
             />
           </div>
-          <ChevronRight className="absolute bottom-4 right-4 text-slate-300 group-hover:text-slate-900 transition-colors" size={20} />
+          <button 
+            onClick={() => onNavigate('cleaning')}
+            className="mt-6 w-full py-4 bg-white border-2 border-slate-900 rounded-xl font-black uppercase tracking-widest text-xs shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-y-1 active:shadow-none flex items-center justify-center gap-2"
+          >
+            Update Cleaning Log
+            <ChevronRight size={16} />
+          </button>
         </div>
 
         {/* Temperature Card */}
-        <div 
-          onClick={() => onNavigate('temperature')}
-          className={cardBaseClass}
-          aria-label="View temperature logs"
-        >
+        <div className={cardBaseClass}>
           <div className="flex items-center justify-between mb-4">
             <span className="text-xs font-black uppercase tracking-widest text-slate-500">Last Reading</span>
             <Thermometer className="text-slate-900" size={24} />
@@ -181,15 +179,17 @@ Compliance Status: ${temps.some(t => !isCompliant(t.type, t.value)) && actions.l
           ) : (
             <p className="text-lg font-bold text-slate-400 uppercase italic">No readings today</p>
           )}
-          <ChevronRight className="absolute bottom-4 right-4 text-slate-300 group-hover:text-slate-900 transition-colors" size={20} />
+          <button 
+            onClick={() => onNavigate('temperature')}
+            className="mt-6 w-full py-4 bg-emerald-500 text-white border-2 border-slate-900 rounded-xl font-black uppercase tracking-widest text-xs shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-y-1 active:shadow-none flex items-center justify-center gap-2"
+          >
+            Log Temperature
+            <ChevronRight size={16} />
+          </button>
         </div>
 
         {/* Expiry Card */}
-        <div 
-          onClick={() => onNavigate('expiry')}
-          className={`${cardBaseClass} ${expiredCount > 0 ? 'bg-red-50' : 'bg-slate-50'}`}
-          aria-label="View expiry alerts"
-        >
+        <div className={`${cardBaseClass} ${expiredCount > 0 ? 'bg-red-50' : 'bg-slate-50'}`}>
           <div className="flex items-center justify-between mb-4">
             <span className="text-xs font-black uppercase tracking-widest text-slate-500">Expiry Alerts</span>
             <AlertTriangle className={expiredCount > 0 ? 'text-red-600' : 'text-slate-400'} size={24} />
@@ -201,15 +201,17 @@ Compliance Status: ${temps.some(t => !isCompliant(t.type, t.value)) && actions.l
           {expiredCount > 0 && (
             <p className="text-xs font-bold text-red-600 mt-2 uppercase animate-pulse">Action Required Immediately</p>
           )}
-          <ChevronRight className="absolute bottom-4 right-4 text-slate-300 group-hover:text-slate-900 transition-colors" size={20} />
+          <button 
+            onClick={() => onNavigate('expiry')}
+            className={`mt-6 w-full py-4 border-2 border-slate-900 rounded-xl font-black uppercase tracking-widest text-xs shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-y-1 active:shadow-none flex items-center justify-center gap-2 ${expiredCount > 0 ? 'bg-red-600 text-white' : 'bg-white text-slate-900'}`}
+          >
+            Resolve Expiry Alerts
+            <ChevronRight size={16} />
+          </button>
         </div>
 
         {/* Waste Card */}
-        <div 
-          onClick={() => onNavigate('waste')}
-          className="relative bg-violet-50 border-2 border-violet-800 p-6 rounded-none shadow-[4px_4px_0px_0px_rgba(76,29,149,1)] cursor-pointer transition-all duration-200 hover:shadow-[6px_6px_0px_0px_rgba(76,29,149,1)] hover:-translate-y-1 active:translate-y-0 active:shadow-[2px_2px_0px_0px_rgba(76,29,149,1)] group"
-          aria-label="View waste logs"
-        >
+        <div className="relative bg-violet-50 border-2 border-violet-800 p-6 rounded-2xl shadow-[6px_6px_0px_0px_rgba(76,29,149,1)] group overflow-hidden">
           <div className="flex items-center justify-between mb-4">
             <span className="text-xs font-black uppercase tracking-widest text-violet-600">Waste Logs</span>
             <span className="text-violet-800"><Trash2 size={24} /></span>
@@ -218,7 +220,13 @@ Compliance Status: ${temps.some(t => !isCompliant(t.type, t.value)) && actions.l
             <span className="text-5xl font-black text-violet-900">{wasteCount}</span>
             <span className="text-sm font-bold text-violet-700 uppercase">Entries Today</span>
           </div>
-          <ChevronRight className="absolute bottom-4 right-4 text-violet-300 group-hover:text-violet-800 transition-colors" size={20} />
+          <button 
+            onClick={() => onNavigate('waste')}
+            className="mt-6 w-full py-4 bg-violet-600 text-white border-2 border-slate-900 rounded-xl font-black uppercase tracking-widest text-xs shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-y-1 active:shadow-none flex items-center justify-center gap-2"
+          >
+            Add Waste Entry
+            <ChevronRight size={16} />
+          </button>
         </div>
       </div>
 

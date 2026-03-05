@@ -109,7 +109,7 @@ export default function Waste() {
       </div>
 
       {showAdd && (
-        <div className="bg-slate-50 border-2 border-slate-900 p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] animate-in slide-in-from-top duration-200">
+        <div className="bg-slate-50 border-2 border-slate-900 p-6 rounded-2xl shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] animate-in slide-in-from-top duration-200">
           <div className="space-y-4">
             <div>
               <label className="block text-xs font-black uppercase tracking-widest text-slate-500 mb-1">Item Name</label>
@@ -118,7 +118,7 @@ export default function Waste() {
                 value={item}
                 onChange={(e) => setItem(e.target.value)}
                 placeholder="e.g. Cooked Rice"
-                className="w-full p-3 border-2 border-slate-900 font-bold focus:outline-none focus:ring-4 focus:ring-violet-500/20"
+                className="w-full p-4 border-2 border-slate-900 rounded-xl font-bold focus:outline-none focus:ring-4 focus:ring-violet-500/20"
               />
             </div>
             <div>
@@ -128,7 +128,7 @@ export default function Waste() {
                 value={quantity}
                 onChange={(e) => setQuantity(e.target.value)}
                 placeholder="e.g. 500g or 2 portions"
-                className="w-full p-3 border-2 border-slate-900 font-bold focus:outline-none focus:ring-4 focus:ring-violet-500/20"
+                className="w-full p-4 border-2 border-slate-900 rounded-xl font-bold focus:outline-none focus:ring-4 focus:ring-violet-500/20"
               />
             </div>
             <div>
@@ -138,7 +138,7 @@ export default function Waste() {
                   <button
                     key={r}
                     onClick={() => setReason(r)}
-                    className={`px-3 py-2 text-[10px] font-black border-2 border-slate-900 transition-all ${
+                    className={`px-4 py-2 text-[10px] font-black border-2 border-slate-900 rounded-lg transition-all ${
                       reason === r ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'
                     }`}
                   >
@@ -153,12 +153,12 @@ export default function Waste() {
                 rows={2}
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                className="w-full p-3 border-2 border-slate-900 font-bold focus:outline-none focus:ring-4 focus:ring-violet-500/20"
+                className="w-full p-4 border-2 border-slate-900 rounded-xl font-bold focus:outline-none focus:ring-4 focus:ring-violet-500/20"
               />
             </div>
             <button
               onClick={handleSave}
-              className="w-full bg-slate-900 text-white py-4 font-black uppercase tracking-widest border-2 border-slate-900 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-y-1 active:shadow-none"
+              className="w-full bg-slate-900 text-white py-5 rounded-xl font-black uppercase tracking-widest border-2 border-slate-900 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:translate-y-1 active:shadow-none"
             >
               Log Waste
             </button>
@@ -189,7 +189,7 @@ export default function Waste() {
                   className="relative overflow-hidden"
                 >
                   <div 
-                    className={`border-2 border-slate-900 p-4 bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-transform duration-200 ${
+                    className={`border-2 border-slate-900 p-5 bg-white rounded-2xl shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-transform duration-200 ${
                       swipedId === entry.id ? '-translate-x-24' : 'translate-x-0'
                     }`}
                   >

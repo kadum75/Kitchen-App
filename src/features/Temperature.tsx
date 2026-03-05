@@ -156,23 +156,23 @@ export default function Temperature({ staffName, forceAddTrigger }: { staffName:
       )}
 
       {/* Input Section */}
-      <div className="bg-slate-50 border-2 border-slate-900 p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-        <div className="flex border-2 border-slate-900 mb-6">
+      <div className="bg-slate-50 border-2 border-slate-900 p-6 rounded-2xl shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+        <div className="flex border-2 border-slate-900 mb-6 rounded-xl overflow-hidden">
           <button
             onClick={() => setType('FRIDGE')}
-            className={`flex-1 py-3 font-black uppercase tracking-widest text-xs ${type === 'FRIDGE' ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'}`}
+            className={`flex-1 py-4 font-black uppercase tracking-widest text-xs ${type === 'FRIDGE' ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'}`}
           >
             Fridge
           </button>
           <button
             onClick={() => setType('FREEZER')}
-            className={`flex-1 py-3 font-black uppercase tracking-widest text-xs border-x-2 border-slate-900 ${type === 'FREEZER' ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'}`}
+            className={`flex-1 py-4 font-black uppercase tracking-widest text-xs border-x-2 border-slate-900 ${type === 'FREEZER' ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'}`}
           >
             Freezer
           </button>
           <button
             onClick={() => setType('HOT_HOLD')}
-            className={`flex-1 py-3 font-black uppercase tracking-widest text-xs ${type === 'HOT_HOLD' ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'}`}
+            className={`flex-1 py-4 font-black uppercase tracking-widest text-xs ${type === 'HOT_HOLD' ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'}`}
           >
             Hot Hold
           </button>
@@ -187,7 +187,7 @@ export default function Temperature({ staffName, forceAddTrigger }: { staffName:
               value={equipmentNumber}
               onChange={(e) => setEquipmentNumber(e.target.value)}
               placeholder="e.g. FRIDGE-01"
-              className="w-full p-3 border-2 border-slate-900 font-bold text-sm focus:outline-none focus:ring-4 focus:ring-emerald-500/20"
+              className="w-full p-4 border-2 border-slate-900 rounded-xl font-bold text-sm focus:outline-none focus:ring-4 focus:ring-emerald-500/20"
             />
           </div>
 
@@ -198,13 +198,13 @@ export default function Temperature({ staffName, forceAddTrigger }: { staffName:
               onChange={(e) => setValue(e.target.value)}
               placeholder="0.0"
               step="0.1"
-              className="w-full text-6xl font-black p-4 border-2 border-slate-900 bg-white text-center focus:outline-none focus:ring-4 focus:ring-emerald-500/20"
+              className="w-full text-6xl font-black p-6 border-2 border-slate-900 bg-white rounded-xl text-center focus:outline-none focus:ring-4 focus:ring-emerald-500/20"
             />
             <span className="absolute right-4 bottom-4 text-2xl font-black text-slate-400">°C</span>
           </div>
 
           {error && (
-            <div className="flex items-center gap-2 text-red-600 font-bold text-sm bg-red-50 p-3 border border-red-200">
+            <div className="flex items-center gap-2 text-red-600 font-bold text-sm bg-red-50 p-4 border-2 border-red-200 rounded-xl">
               <AlertCircle size={18} />
               <span>{error}</span>
             </div>
@@ -212,7 +212,7 @@ export default function Temperature({ staffName, forceAddTrigger }: { staffName:
 
           <button
             onClick={handleSave}
-            className="w-full bg-emerald-600 text-white py-5 font-black uppercase tracking-widest text-xl flex items-center justify-center gap-3 border-2 border-slate-900 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-y-1 active:shadow-none transition-all"
+            className="w-full bg-emerald-600 text-white py-5 font-black uppercase tracking-widest text-xl flex items-center justify-center gap-3 border-2 border-slate-900 rounded-xl shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:translate-y-1 active:shadow-none transition-all"
           >
             <Save size={24} />
             Save Entry
@@ -266,17 +266,17 @@ export default function Temperature({ staffName, forceAddTrigger }: { staffName:
           <Thermometer size={20} />
           Recent Logs
         </h3>
-        <div className="space-y-2">
+        <div className="space-y-3">
           {logs.map(log => {
             const compliant = isCompliant(log.type, log.value);
             return (
-              <div key={log.id} className="flex items-center justify-between p-4 border-2 border-slate-900 bg-white">
-                <div className="flex items-center gap-3">
-                  {compliant ? <CheckCircle className="text-emerald-600" size={20} /> : <XCircle className="text-red-600" size={20} />}
+              <div key={log.id} className="flex items-center justify-between p-5 border-2 border-slate-900 bg-white rounded-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                <div className="flex items-center gap-4">
+                  {compliant ? <CheckCircle className="text-emerald-600" size={24} /> : <XCircle className="text-red-600" size={24} />}
                   <div>
-                    <span className="font-black text-xl">{log.value}°C</span>
+                    <span className="font-black text-2xl">{log.value}°C</span>
                     <div className="flex flex-wrap items-center gap-2 mt-1">
-                      <span className="text-[10px] font-black uppercase bg-slate-100 px-1.5 py-0.5 border border-slate-300 text-slate-600">
+                      <span className="text-[10px] font-black uppercase bg-slate-100 px-2 py-1 border border-slate-300 text-slate-600 rounded-md">
                         {log.equipmentNumber}
                       </span>
                       {log.location && (
