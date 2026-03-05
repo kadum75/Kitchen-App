@@ -156,6 +156,15 @@ export default function LoginScreen({ onDemo }: LoginScreenProps) {
             <Eye size={18} />
             Try Free for 14 Days — No Card Needed
           </button>
+          
+          <div className="text-center pt-2">
+            <button
+              onClick={() => window.open(import.meta.env.VITE_STRIPE_DONATE_URL || 'https://buy.stripe.com/eVqfZh2GX9MD6lyeo028807', '_blank')}
+              className="text-rose-400 text-[10px] font-black uppercase tracking-widest hover:underline flex items-center justify-center gap-1 mx-auto"
+            >
+              ❤️ Support Us
+            </button>
+          </div>
         </div>
 
         <div className="text-center space-y-1">

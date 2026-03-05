@@ -1,5 +1,6 @@
+/* Home button added */
 import React, { useState } from 'react';
-import { CheckCircle2, Loader2, ArrowLeft } from 'lucide-react';
+import { CheckCircle2, Loader2, ArrowLeft, Heart } from 'lucide-react';
 
 interface PricingScreenProps {
   onDemo: () => void;
@@ -24,18 +25,30 @@ export default function PricingScreen({ onDemo, onBack, message }: PricingScreen
     }
   };
 
+  const handleStripeSubscribe = async () => {
+    setIsLoading(true);
+    setError('');
+    try {
+      const stripeLink = import.meta.env.VITE_STRIPE_PAYMENT_LINK || 'https://buy.stripe.com/8x28wP81h1g75hucgG28806';
+      window.open(stripeLink, '_blank');
+    } catch (err: any) {
+      console.error(err);
+      setError('Failed to start checkout. Please try again later.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="fixed inset-0 bg-[#0a1628] flex flex-col items-center justify-center p-6 z-[200] overflow-y-auto">
-      <div className="w-full max-w-md flex flex-col items-center space-y-8 py-8">
-        <div className="w-full flex justify-start">
-          <button 
-            onClick={onBack}
-            className="text-slate-400 hover:text-white flex items-center gap-2 text-xs font-bold uppercase tracking-widest transition-colors"
-          >
-            <ArrowLeft size={16} /> Back
-          </button>
-        </div>
+      <button 
+        onClick={onBack}
+        className="fixed top-4 left-4 z-50 bg-black/50 text-white px-4 py-2 rounded-full flex items-center gap-2 text-xs font-bold uppercase tracking-widest hover:bg-black/70 transition-colors backdrop-blur-sm shadow-lg border border-white/10"
+      >
+        <ArrowLeft size={16} /> Home
+      </button>
 
+      <div className="w-full max-w-md flex flex-col items-center space-y-8 py-8 mt-12">
         <div className="text-center space-y-2">
           <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tighter uppercase">Simple, Honest Pricing</h1>
         </div>
@@ -78,7 +91,7 @@ export default function PricingScreen({ onDemo, onBack, message }: PricingScreen
             </p>
           )}
 
-          <div className="w-full space-y-2">
+          <div className="w-full space-y-3">
             <button
               onClick={handleSubscribe}
               disabled={isLoading}
@@ -93,9 +106,44 @@ export default function PricingScreen({ onDemo, onBack, message }: PricingScreen
                 'Start with Direct Debit'
               )}
             </button>
-            <p className="text-center text-[10px] font-bold uppercase tracking-widest text-slate-500">
+            <button
+              onClick={handleStripeSubscribe}
+              disabled={isLoading}
+              className="w-full py-4 bg-[#635BFF] text-white font-black uppercase tracking-widest text-sm border-2 border-slate-900 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all active:translate-y-1 active:shadow-none disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 size={18} className="animate-spin" />
+                  Starting...
+                </>
+              ) : (
+                'Start with Stripe'
+              )}
+            </button>
+            <p className="text-center text-[10px] font-bold uppercase tracking-widest text-slate-500 pt-1">
               Cheaper than a pack of printer paper
             </p>
+          </div>
+
+          <div className="w-full pt-6 mt-6 border-t border-white/10 space-y-4">
+            <div className="flex items-center justify-center gap-2 text-slate-300">
+              <Heart size={16} className="text-rose-500 fill-rose-500" />
+              <h3 className="text-sm font-black uppercase tracking-widest">Support Us</h3>
+            </div>
+            <div className="space-y-3">
+              <button
+                onClick={() => window.open(import.meta.env.VITE_STRIPE_DONATE_URL || 'https://buy.stripe.com/eVqfZh2GX9MD6lyeo028807', '_blank')}
+                className="w-full py-3 bg-amber-500 text-slate-900 font-black uppercase tracking-widest text-xs border-2 border-slate-900 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all active:translate-y-1 active:shadow-none flex items-center justify-center gap-2"
+              >
+                💳 Donate via Card
+              </button>
+              <button
+                onClick={() => window.open(import.meta.env.VITE_GOCARDLESS_DONATE_URL || 'https://pay.gocardless.com/donate', '_blank')}
+                className="w-full py-3 bg-blue-500 text-white font-black uppercase tracking-widest text-xs border-2 border-slate-900 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all active:translate-y-1 active:shadow-none flex items-center justify-center gap-2"
+              >
+                🏦 Donate via Direct Debit
+              </button>
+            </div>
           </div>
         </div>
 

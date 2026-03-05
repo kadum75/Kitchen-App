@@ -712,7 +712,7 @@ export default function App() {
                   <div className="space-y-4">
                     <div>
                       <h4 className="uppercase font-semibold text-gray-300 text-[10px] tracking-wider mb-1">App Info</h4>
-                      <p className="text-xs text-gray-400 leading-relaxed">KLOGS v1.0 (Beta) - Built by RC Computers, Woking UK. 2026 RC Computers. All rights reserved.</p>
+                      <p className="text-xs text-gray-400 leading-relaxed">KLOGS v1.0 (Beta) - Built by ZenStack, Woking UK. 2026 ZenStack. All rights reserved.</p>
                     </div>
                     <div className="border-t border-slate-700/30 pt-4">
                       <h4 className="uppercase font-semibold text-gray-300 text-[10px] tracking-wider mb-1">Legal Notice</h4>
@@ -728,7 +728,7 @@ export default function App() {
                     </div>
                     <div className="border-t border-slate-700/30 pt-4">
                       <h4 className="uppercase font-semibold text-gray-300 text-[10px] tracking-wider mb-1">Disclaimer</h4>
-                      <p className="text-xs text-gray-400 leading-relaxed">RC Computers accepts no liability for data loss, food safety incidents, regulatory penalties, or any other loss arising from use of this app. Provided as-is without warranty.</p>
+                      <p className="text-xs text-gray-400 leading-relaxed">ZenStack accepts no liability for data loss, food safety incidents, regulatory penalties, or any other loss arising from use of this app. Provided as-is without warranty.</p>
                     </div>
                     <div className="border-t border-slate-700/30 pt-4">
                       <h4 className="uppercase font-semibold text-gray-300 text-[10px] tracking-wider mb-1">Beta Version</h4>
